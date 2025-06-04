@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import GoogleLoginComponent from "../../components/GoogleLogin/GoogleLoginComponent";
 
 const Login = () => {
   return (
@@ -6,7 +7,9 @@ const Login = () => {
       <div className="w-[85%] md:w-[28%] shadow-xl rounded-sm box  p-10 mt-10 ">
         <div className="text-3xl">Sign In</div>
 
-        <div className="my-5">Google Login BTN</div>
+        <div className="my-5">
+          <GoogleLoginComponent />
+        </div>
 
         <div className="flex items-center gap-2 justify-between relative ">
           <div className="border-b-1 border-gray-400 w-[45%] " />

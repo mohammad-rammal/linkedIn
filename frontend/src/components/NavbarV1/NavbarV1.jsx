@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import linkedinLogo from "../assets/images/LinkedIn_logo_initials.png";
+import linkedinLogo from "../../assets/images/LinkedIn_logo_initials.png";
 
 const NavbarV1 = () => {
   return (

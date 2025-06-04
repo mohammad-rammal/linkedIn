@@ -1,10 +1,10 @@
-import NavbarV1 from "./NavbarV1/NavbarV1";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import Footer from "./components/Footer/Footer";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import SignUp from "./pages/SignUp/SignUp";
 import Login from "./pages/Login/Login";
+import NavbarV1 from "./components/NavbarV1/NavbarV1";
 
 const App = () => {
   return (

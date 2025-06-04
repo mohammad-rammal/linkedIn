@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import GoogleLoginComponent from "../../components/GoogleLogin/GoogleLoginComponent";
 
 const SignUp = () => {
   return (
@@ -43,7 +44,9 @@ const SignUp = () => {
           <div className="absolute top-[20%] right-[48%]">or</div>
           <div className="border-b-1 border-gray-400 w-[45%] my-6 " />
         </div>
-        <div>Google Login BTN</div>
+        <div>
+          <GoogleLoginComponent />
+        </div>
       </div>
 
       <div className="mt-4 mb-10 ">

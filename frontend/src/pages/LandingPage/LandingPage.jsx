@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import landingPage from "../../assets/images/landingPage.png";
+import GoogleLoginComponent from "../../components/GoogleLogin/GoogleLoginComponent";
 
 const LandingPage = () => {
   return (
@@ -9,7 +10,7 @@ const LandingPage = () => {
           welcome to your professional community
         </div>
         <div className="my-3 flex mx-auto mt-[20px] bg-white gap-2 rounded-3xl w-[70%] text-black cursor-pointer ">
-          Google Button
+          <GoogleLoginComponent />
         </div>
 
         <div className="flex mx-auto mt-[20px] py-2 px-2 bg-white gap-2 rounded-3xl items-center w-[70%] justify-center text-black hover:bg-gray-100 border-2 cursor-pointer ">
