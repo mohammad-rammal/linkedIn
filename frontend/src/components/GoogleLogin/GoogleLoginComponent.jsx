@@ -6,7 +6,7 @@ const GoogleLoginComponent = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full  ">
       <GoogleLogin
         onSuccess={(credentialResponse) => handleOnSuccess(credentialResponse)}
         onError={() => {

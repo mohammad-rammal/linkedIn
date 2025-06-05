@@ -13,9 +13,12 @@ const LandingPage = () => {
           <GoogleLoginComponent />
         </div>
 
-        <div className="flex mx-auto mt-[20px] py-2 px-2 bg-white gap-2 rounded-3xl items-center w-[70%] justify-center text-black hover:bg-gray-100 border-2 cursor-pointer ">
+        <Link
+          to={"/login"}
+          className="flex mx-auto mt-[20px] py-2 px-2 bg-white gap-2 rounded-3xl items-center w-[70%] justify-center text-black hover:bg-gray-100 border-2 cursor-pointer "
+        >
           Sing in with email
-        </div>
+        </Link>
         <div className="mx-auto mb-4 text-xs w-[70%] mt-6 text-center opacity-75">
           By clicking Continue to join or sign in, you agree to LinkedIn’s{" "}
           <span className="text-blue-800 cursor-pointer hover:underline">
