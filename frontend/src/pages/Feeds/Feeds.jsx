@@ -5,6 +5,7 @@ import VideoCallIcon from "@mui/icons-material/VideoCall";
 import PhotoIcon from "@mui/icons-material/Photo";
 import ArticleIcon from "@mui/icons-material/Article";
 import Advertisement from "../../components/Advertisement/Advertisement";
+import Post from "../../components/Post/Post";
 
 const Feeds = () => {
   return (
@@ -62,7 +63,9 @@ const Feeds = () => {
 
         <div className="border-b-1 border-gray-400 w-[100%] my-5 " />
 
-        <div className="w-full flex flex-col gap-5 ">Post</div>
+        <div className="w-full flex flex-col gap-5 ">
+          <Post />
+        </div>
       </div>
 
       {/* Right Side */}
