@@ -7,6 +7,7 @@ import Login from "./pages/Login/Login";
 import NavbarV1 from "./components/NavbarV1/NavbarV1";
 import NavbarV2 from "./components/NavbarV2/NavbarV2";
 import Feeds from "./pages/Feeds/Feeds";
+import MyNetwork from "./pages/MyNetwork/MyNetwork";
 
 const App = () => {
   const isLogin = true;
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/feeds" element={<Feeds />} />
+        <Route path="/mynetwork" element={<MyNetwork />} />
       </Routes>
       <Footer />
     </div>

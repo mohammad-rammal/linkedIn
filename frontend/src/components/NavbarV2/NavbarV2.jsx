@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import WorkIcon from "@mui/icons-material/Work";
@@ -45,7 +45,10 @@ const NavbarV2 = () => {
       </div>
 
       <div className="hidden gap-10 md:flex">
-        <div className="flex flex-col items-center cursor-pointer">
+        <Link
+          to={"/feeds"}
+          className="flex flex-col items-center cursor-pointer"
+        >
           <HomeIcon
             sx={{ color: location.pathname === "/feeds" ? "black" : "gray" }}
           />
@@ -56,8 +59,11 @@ const NavbarV2 = () => {
           >
             Home
           </div>
-        </div>
-        <div className="flex flex-col items-center cursor-pointer">
+        </Link>
+        <Link
+          to={"/mynetwork"}
+          className="flex flex-col items-center cursor-pointer"
+        >
           <GroupIcon
             sx={{
               color: location.pathname === "/mynetwork" ? "black" : "gray",
@@ -70,7 +76,7 @@ const NavbarV2 = () => {
           >
             My Network
           </div>
-        </div>
+        </Link>
         <div className="flex flex-col items-center cursor-pointer">
           <WorkIcon
             sx={{ color: location.pathname === "/jobs" ? "black" : "gray" }}
