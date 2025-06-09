@@ -37,7 +37,7 @@ const Post = () => {
         </div>
         <div>
           <div className="text-lg font-semibold ">Username</div>
-          <div className="text-xs text-gray-500 ">Job @Office</div>
+          <div className="text-xs text-gray-500 ">Resume @Office</div>
         </div>
       </div>
       <div className="text-md p-4 my-3 whitespace-pre-line flex-grow ">
@@ -108,7 +108,7 @@ const Post = () => {
                 />
                 <div className="cursor-pointer">
                   <div className="text-md">Username</div>
-                  <div className="text-sm text-gray-500">@Office Job</div>
+                  <div className="text-sm text-gray-500">@Office Resume</div>
                 </div>
               </div>
             </div>

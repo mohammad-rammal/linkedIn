@@ -77,19 +77,25 @@ const NavbarV2 = () => {
             My Network
           </div>
         </Link>
-        <div className="flex flex-col items-center cursor-pointer">
+        <Link
+          to={"/resume"}
+          className="flex flex-col items-center cursor-pointer"
+        >
           <WorkIcon
-            sx={{ color: location.pathname === "/jobs" ? "black" : "gray" }}
+            sx={{ color: location.pathname === "/resume" ? "black" : "gray" }}
           />
           <div
             className={`text-sm text-gray-500 ${
-              location.pathname === "/jobs" ? "border-b-3" : ""
+              location.pathname === "/resume" ? "border-b-3" : ""
             }`}
           >
-            Jobs
+            Resume
           </div>
-        </div>
-        <div className="flex flex-col items-center cursor-pointer">
+        </Link>
+        <Link
+          to={"/messages"}
+          className="flex flex-col items-center cursor-pointer"
+        >
           <MessageOutlinedIcon
             sx={{
               color: location.pathname === "/messaging" ? "black" : "gray",
@@ -102,7 +108,7 @@ const NavbarV2 = () => {
           >
             Messaging
           </div>
-        </div>
+        </Link>
         <div className="flex flex-col items-center cursor-pointer">
           <div className="relative">
             <AddAlertOutlinedIcon

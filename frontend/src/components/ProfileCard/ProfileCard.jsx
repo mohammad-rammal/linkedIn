@@ -23,7 +23,7 @@ const ProfileCard = () => {
       </div>
       <div className="p-5 ">
         <div className="text-xl">User name</div>
-        <div className="text-sm my-1">@Job</div>
+        <div className="text-sm my-1">@Resume</div>
         <div className="text-sm my-1">City</div>
         <div className="text-sm my-1">Working At</div>
       </div>
