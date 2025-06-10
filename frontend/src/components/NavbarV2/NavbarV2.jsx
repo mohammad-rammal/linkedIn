@@ -17,9 +17,9 @@ const NavbarV2 = () => {
   return (
     <div className="bg-white h-13 flex justify-between py-1 px-5 xl:px-50 fixed top-0 w-[100%] z-1000">
       <div className="flex gap-2 items-center ">
-        <div>
+        <Link to={"/feeds"}>
           <img src={linkedinLogo} alt="logo" className="w-8 h-8" />
-        </div>
+        </Link>
         <div className=" relative ">
           <input
             type="text"
@@ -109,7 +109,10 @@ const NavbarV2 = () => {
             Messaging
           </div>
         </Link>
-        <div className="flex flex-col items-center cursor-pointer">
+        <Link
+          to={"/notification"}
+          className="flex flex-col items-center cursor-pointer"
+        >
           <div className="relative">
             <AddAlertOutlinedIcon
               sx={{
@@ -128,15 +131,18 @@ const NavbarV2 = () => {
           >
             Notification
           </div>
-        </div>
-        <div className="flex flex-col items-center cursor-pointer">
+        </Link>
+        <Link
+          to={`/profile/id`}
+          className="flex flex-col items-center cursor-pointer"
+        >
           <img
             src={profileImage}
             alt="profileImage"
             className="w-6 h-6 rounded-full"
           />
           <div className="text-sm text-gray-500">Me</div>
-        </div>
+        </Link>
       </div>
     </div>
   );
