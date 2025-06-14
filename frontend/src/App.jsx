@@ -11,6 +11,7 @@ import MyNetwork from "./pages/MyNetwork/MyNetwork";
 import Resume from "./pages/Resume/Resume";
 import Messages from "./pages/Messages/Messages";
 import Profile from "./pages/Profile/Profile";
+import Notification from "./pages/Notification/Notification";
 
 const App = () => {
   const isLogin = true;
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/feeds" element={<Feeds />} />
         <Route path="/mynetwork" element={<MyNetwork />} />
         <Route path="/resume" element={<Resume />} />
+        <Route path="/notification" element={<Notification />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/profile/:id" element={<Profile />} />
       </Routes>
