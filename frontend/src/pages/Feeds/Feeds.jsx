@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "../../components/Card/Card";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import profileImage from "../../assets/images/profileImage.png";
@@ -9,29 +9,39 @@ import Advertisement from "../../components/Advertisement/Advertisement";
 import Post from "../../components/Post/Post";
 import Modal from "../../components/Modal/Modal";
 import AddModal from "../../components/AddModal/AddModal";
-import Loader from "../../components/Loader/Loader";
+import SkeletonList from "../../components/SkeletonItem/SkeletonList";
 
 const Feeds = () => {
   const [addPostModal, setAddPostModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
 
   const handleOpenPostModal = () => {
     setAddPostModal((prev) => !prev);
   };
 
+  // Simulate loading
+  useEffect(() => {
+    setTimeout(() => {
+      setPosts([{}, {}, {}]); // sample data
+      setLoading(false);
+    }, 2000);
+  }, []);
+
   return (
-    <div className="px-5 xl:px-50 py-9 flex gap-5 w-full mt-5 bg-gray-100 ">
+    <div className="px-5 xl:px-50 py-9 flex gap-5 w-full mt-5 bg-gray-100">
       {/* Left Side */}
-      <div className="w-[21%] sm:block sm:w-[23%] hidden py-5 ">
+      <div className="w-[21%] sm:block sm:w-[23%] hidden py-5">
         <div className="h-fit">
           <ProfileCard />
         </div>
         <div className="w-full my-5">
           <Card padding={1}>
-            <div className="w-full flex justify-between ">
+            <div className="w-full flex justify-between">
               <div>Profile Viewers</div>
               <div className="text-blue-900">30</div>
             </div>
-            <div className="w-full flex justify-between ">
+            <div className="w-full flex justify-between">
               <div>Post Impressions</div>
               <div className="text-blue-900">120</div>
             </div>
@@ -40,24 +50,24 @@ const Feeds = () => {
       </div>
 
       {/* Center Side */}
-      <div className="w-[100%] py-5 sm:w-[50%] ">
-        {/* Post Section */}
+      <div className="w-[100%] py-5 sm:w-[50%]">
+        {/* Post Box */}
         <div>
           <Card padding={1}>
-            <div className=" flex gap-2 items-center ">
+            <div className="flex gap-2 items-center">
               <img
                 src={profileImage}
-                alt="profileImage"
-                className=" rounded-4xl w-13 h-1/3 border-2 border-white cursor-progress"
+                alt="profile"
+                className="rounded-4xl w-13 h-1/3 border-2 border-white cursor-pointer"
               />
               <div
                 onClick={() => setAddPostModal(true)}
-                className="w-full border-1 p-3 rounded-3xl cursor-pointer hover:bg-gray-100  "
+                className="w-full border p-3 rounded-3xl cursor-pointer hover:bg-gray-100"
               >
                 Start a post
               </div>
             </div>
-            <div className="w-full flex mt-3 ">
+            <div className="w-full flex mt-3">
               <div
                 onClick={() => setAddPostModal(true)}
                 className="flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100"
@@ -83,15 +93,20 @@ const Feeds = () => {
           </Card>
         </div>
 
-        <div className="border-b-1 border-gray-400 w-[100%] my-5 " />
+        <div className="border-b border-gray-400 w-full my-5" />
 
-        <div className="w-full flex flex-col gap-5 ">
-          <Post />
+        {/* Feed Posts */}
+        <div className="w-full flex flex-col gap-5">
+          {loading ? (
+            <SkeletonList count={3} type="post" />
+          ) : (
+            posts.map((_, index) => <Post key={index} />)
+          )}
         </div>
       </div>
 
       {/* Right Side */}
-      <div className="w-[26%] py-5 hidden md:block ">
+      <div className="w-[26%] py-5 hidden md:block">
         <div>
           <Card padding={1}>
             <div className="text-xl">LinkedIn News</div>
@@ -106,7 +121,7 @@ const Feeds = () => {
             </div>
           </Card>
         </div>
-        <div className="sticky my-5 top-19 ">
+        <div className="sticky my-5 top-19">
           <Advertisement />
         </div>
       </div>
@@ -117,9 +132,8 @@ const Feeds = () => {
           <AddModal />
         </Modal>
       )}
-
-      {/* <Loader /> */}
     </div>
   );
 };
+
 export default Feeds;
