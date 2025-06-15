@@ -12,6 +12,8 @@ import Resume from "./pages/Resume/Resume";
 import Messages from "./pages/Messages/Messages";
 import Profile from "./pages/Profile/Profile";
 import Notification from "./pages/Notification/Notification";
+import AllActivities from "./pages/AllActivities/AllActivities";
+import SingleActivity from "./pages/SingleActivity/SingleActivity";
 
 const App = () => {
   const isLogin = true;
@@ -29,6 +31,8 @@ const App = () => {
         <Route path="/notification" element={<Notification />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/profile/:id/activities" element={<AllActivities />} />
+        <Route path="/profile/:id/activities/:postId" element={<SingleActivity />} />
       </Routes>
       <Footer />
     </div>

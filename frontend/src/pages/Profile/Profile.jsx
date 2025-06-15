@@ -5,7 +5,7 @@ import postReact from "../../assets/images/postReact.png";
 import EditIcon from "@mui/icons-material/Edit";
 import Post from "../../components/Post/Post";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../components/Modal/Modal";
 import ImageModal from "../../components/ImageModal/ImageModal";
 import EditInfoModal from "../../components/EditInfoModal/EditInfoModal";
@@ -13,6 +13,7 @@ import AboutModal from "../../AboutModal/AboutModal";
 import ExperienceModal from "../../components/ExperienceModal/ExperienceModal";
 import MessageModal from "../../components/MessageModal/MessageModal";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
+import { Link, useParams } from "react-router-dom";
 
 const Profile = () => {
   const [imageSetModal, setImageSetModal] = useState(false);
@@ -21,6 +22,13 @@ const Profile = () => {
   const [aboutModal, setAboutModal] = useState(false);
   const [experienceModal, setExperienceModal] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
+
+  const { id, postId } = useParams();
+
+  useEffect(() => {
+ 
+  }, [ ])
+  
 
   const handleImageModalOpenClose = () => {
     setImageSetModal((prev) => !prev);
@@ -177,15 +185,21 @@ const Profile = () => {
 
               {/* Parent div for scrollable activities */}
               <div className="overflow-x-auto my-2 gap-1 flex overflow-y-hidden w-full">
-                <div className="shrink-0 w-[350px] cursor-pointer ">
+                <Link
+                  to={`/profile/${id}/activities/${postId}`}
+                  className="shrink-0 w-[350px] h-[560px] cursor-pointer "
+                >
                   <Post profile={1} />
-                </div>
+                </Link>
               </div>
 
               <div className="w-full flex justify-center items-center ">
-                <div className="p-2 rounded-xl cursor-pointer hover:bg-gray-300">
+                <Link
+                  to={`/profile/${id}/activities`}
+                  className="p-2 rounded-xl cursor-pointer hover:bg-gray-300"
+                >
                   Show All Posts <ArrowRightAltIcon />
-                </div>
+                </Link>
               </div>
             </Card>
           </div>
