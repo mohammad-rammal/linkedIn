@@ -1,6 +1,13 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: false, // set to true in production
+  sameSite: "Lax", // set None in production
+};
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -52,6 +59,13 @@ exports.login = async (req, res) => {
     const userExist = await User.findOne({ email });
 
     if (userExist && (await bcrypt.compare(password, userExist.password))) {
+      const token = jwt.sign(
+        { userId: userExist.id },
+        process.env.JWT_PRIVATE_KEY
+      );
+
+      res.cookie("token", token, cookieOptions);
+
       return res.json({ message: "Logged in successfully" });
     } else {
       return res
@@ -89,6 +103,13 @@ exports.loginThroughGmail = async (req, res) => {
         profilePicture: picture,
       });
     }
+
+    const jwtToken = jwt.sign(
+      { userId: userExist.id },
+      process.env.JWT_PRIVATE_KEY
+    );
+
+    res.cookie("token", jwtToken, cookieOptions);
 
     return res.status(200).json({ user: userExist, data: userExist });
   } catch (error) {
