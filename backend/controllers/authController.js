@@ -117,3 +117,19 @@ exports.loginThroughGmail = async (req, res) => {
     res.status(500).json({ error: "Server error", message: error.message });
   }
 };
+
+/****************************************
+ * @desc     Logout User
+ * @route    POST /api/auth/logout
+ * @access   Private
+ ****************************************/
+exports.logout = async (req, res) => {
+  try {
+    res
+      .clearCookie("token", cookieOptions)
+      .json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error", message: error.message });
+  }
+};

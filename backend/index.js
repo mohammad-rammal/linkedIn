@@ -9,9 +9,8 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cookieParser());
 
-const userRoute = require("./routes/authRoute");
-
-app.use("/api/auth", userRoute);
+app.use("/api/auth", require("./routes/authRoute"));
+app.use("/api/user", require("./routes/userRoute"));
 
 connectDB().then(() => {
   app.listen(PORT, () => {
