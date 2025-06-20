@@ -66,11 +66,11 @@ exports.login = async (req, res) => {
 
       res.cookie("token", token, cookieOptions);
 
-      return res.json({ message: "Logged in successfully" });
+      return res.json({ message: "Logged in successfully", userExist });
     } else {
       return res
         .status(400)
-        .json({ error: "Invalid credentials!", success: "yes", userExist });
+        .json({ error: "Invalid credentials!", success: "yes" });
     }
   } catch (error) {
     console.log(error);
