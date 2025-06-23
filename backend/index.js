@@ -14,6 +14,8 @@ app.use("/api/user", require("./routes/userRoute"));
 app.use("/api/post", require("./routes/postRoute"));
 app.use("/api/notification", require("./routes/notificationRoute"));
 app.use("/api/comment", require("./routes/commentRoute"));
+app.use("/api/conversation", require("./routes/conversationRoute"));
+app.use("/api/message", require("./routes/messageRoute"));
 
 connectDB().then(() => {
   app.listen(PORT, () => {
