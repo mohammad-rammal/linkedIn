@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import landingPage from "../../assets/images/landingPage.png";
 import GoogleLoginComponent from "../../components/GoogleLogin/GoogleLoginComponent";
 
-const LandingPage = () => {
+const LandingPage = (props) => {
   return (
     <div className="my-4 py-[50px] md:pl-[120px] px-5 md:flex justify-between">
       <div className="md:w-[40%]">
@@ -10,7 +10,7 @@ const LandingPage = () => {
           welcome to your professional community
         </div>
         <div className="my-3 flex mx-auto mt-[20px] bg-white gap-2 rounded-3xl w-[70%] text-black cursor-pointer ">
-          <GoogleLoginComponent />
+          <GoogleLoginComponent changeLoginValue={props.changeLoginValue} />
         </div>
 
         <Link

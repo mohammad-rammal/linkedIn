@@ -68,9 +68,7 @@ exports.login = async (req, res) => {
 
       return res.json({ message: "Logged in successfully", userExist });
     } else {
-      return res
-        .status(400)
-        .json({ error: "Invalid credentials!", success: "yes" });
+      return res.status(400).json({ error: "Invalid credentials!" });
     }
   } catch (error) {
     console.log(error);
@@ -94,7 +92,7 @@ exports.loginThroughGmail = async (req, res) => {
 
     const { sub, email, name, picture } = payload;
 
-    const userExist = await User.findOne({ email });
+    let userExist = await User.findOne({ email });
     if (!userExist) {
       userExist = await User.create({
         googleId: sub,

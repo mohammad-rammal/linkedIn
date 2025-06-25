@@ -1,7 +1,48 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GoogleLoginComponent from "../../components/GoogleLogin/GoogleLoginComponent";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-const SignUp = () => {
+const SignUp = (props) => {
+  const navigate = useNavigate();
+  const [registerField, setRegisterField] = useState({
+    email: "",
+    password: "",
+    fullName: "",
+  });
+
+  const handleInputField = (e, key) => {
+    setRegisterField({ ...registerField, [key]: e.target.value });
+  };
+
+  const handleRegister = async () => {
+    if (
+      registerField.email.trim().length === 0 ||
+      registerField.password.trim().length === 0 ||
+      registerField.fullName.trim().length === 0
+    ) {
+      return toast.error("Missing fields");
+    }
+
+    await axios
+      .post("http://localhost:5000/api/auth/register", registerField)
+      .then((res) => {
+        toast.success("Registered successfully");
+        setRegisterField({
+          ...registerField,
+          email: "",
+          password: "",
+          fullName: "",
+        });
+        navigate("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err?.response?.data?.error);
+      });
+  };
+
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <div className="text-4xl mb-5 ">
@@ -12,6 +53,10 @@ const SignUp = () => {
           <div>
             <label htmlFor="email">Email</label>
             <input
+              value={registerField.email}
+              onChange={(e) => {
+                handleInputField(e, "email");
+              }}
               type="text"
               className="w-full text-xl border-2 rounded-lg px-5 py-1 "
               placeholder="Email"
@@ -21,6 +66,10 @@ const SignUp = () => {
           <div>
             <label htmlFor="password">Password</label>
             <input
+              value={registerField.password}
+              onChange={(e) => {
+                handleInputField(e, "password");
+              }}
               type="password"
               className="w-full text-xl border-2 rounded-lg px-5 py-1 "
               placeholder="Password"
@@ -29,12 +78,19 @@ const SignUp = () => {
           <div>
             <label htmlFor="full_name">Full name</label>
             <input
+              value={registerField.fullName}
+              onChange={(e) => {
+                handleInputField(e, "fullName");
+              }}
               type="text"
               className="w-full text-xl border-2 rounded-lg px-5 py-1 "
               placeholder="Full name"
             />
           </div>
-          <div className="w-full hover:bg-blue-900 bg-blue-800 text-white py-3 px-4 rounded-xl text-center text-xl cursor-pointer ">
+          <div
+            onClick={handleRegister}
+            className="w-full hover:bg-blue-900 bg-blue-800 text-white py-3 px-4 rounded-xl text-center text-xl cursor-pointer "
+          >
             Register
           </div>
         </div>
@@ -45,7 +101,7 @@ const SignUp = () => {
           <div className="border-b-1 border-gray-400 w-[45%] my-6 " />
         </div>
         <div>
-          <GoogleLoginComponent />
+          <GoogleLoginComponent changeLoginValue={props.changeLoginValue} />
         </div>
       </div>
 
