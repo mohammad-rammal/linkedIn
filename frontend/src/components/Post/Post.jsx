@@ -1,15 +1,16 @@
 import Card from "../Card/Card";
 import profileImage from "../../assets/images/profileImage.png";
-import postReact from "../../assets/images/postReact.png";
 import { useState } from "react";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
 import SendIcon from "@mui/icons-material/Send";
 
-const Post = ({ profile }) => {
+const Post = ({ profile, item, personalData, postKey }) => {
   const [seeMore, setSeeMore] = useState(false);
   const [comment, setComment] = useState(false);
+
+  console.log(item);
 
   const handleShow = () => {
     setSeeMore((prev) => !prev);
@@ -23,39 +24,51 @@ const Post = ({ profile }) => {
     setComment(true);
   };
 
-  const desc = `React.js makes building user interfaces fast and efficient with its component-based structure and powerful hooks. I enjoy how it simplifies complex UI logic and seamlessly integrates with APIs, making it ideal for full-stack development. Whether it is managing state or creating reusable components, React helps me build clean, scalable apps with ease. `;
+  const desc = item?.description;
 
   return (
-    <Card padding={0}>
+    <Card padding={0} key={postKey}>
       <div className="flex gap-3 p-4">
         <div className="w-12 h-12 rounded-4xl">
           <img
-            src={profileImage}
+            src={item?.user?.profilePicture}
             alt="profileImage"
             className="w-12 h-12 rounded-4xl border-2 border-white cursor-pointer"
           />
         </div>
         <div>
-          <div className="text-lg font-semibold ">Username</div>
-          <div className="text-xs text-gray-500 ">Resume @Office</div>
+          <div className="text-lg font-semibold capitalize">
+            {item?.user?.fullName}
+          </div>
+          <div className="text-xs text-gray-500 ">{item?.user?.headline}</div>
         </div>
       </div>
       <div className="text-md p-4 my-3 whitespace-pre-line flex-grow ">
-        {seeMore ? desc : `${desc.slice(0, 50)}...`}{" "}
-        <span onClick={handleShow} className="text-gray-500 cursor-pointer ">
-          {seeMore ? "See Less" : "See More"}
-        </span>
+        {desc ? (seeMore ? desc : `${desc.slice(0, 50)}...`) : null}
+        {desc?.length >= 100 && (
+          <span onClick={handleShow} className="text-gray-500 cursor-pointer">
+            {seeMore ? "See Less" : "See More"}
+          </span>
+        )}
       </div>
       <div className="w-[100%] h-[300px] ">
-        <img src={postReact} alt="postReact" className="w-full h-full  " />
+        <img
+          src={item?.imageLink}
+          alt="postReact"
+          className="w-full h-full  "
+        />
       </div>
       <div className="my-2 p-4 flex justify-between items-center ">
         <div className="flex gap-1 items-center ">
           <ThumbUpIcon sx={{ color: "blue", fontSize: 18 }} />{" "}
-          <div className="text-sm text-gray-600">1 Likes</div>
+          <div className="text-sm text-gray-600">
+            {item?.likes?.length} Likes
+          </div>
         </div>
         <div className="flex gap-1 items-center ">
-          <div className="text-sm text-gray-600">3 Comments</div>
+          <div className="text-sm text-gray-600">
+            {item?.comments?.length} Comments
+          </div>
         </div>
       </div>
 

@@ -6,13 +6,11 @@ import App from "./App.jsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <GoogleOAuthProvider
-      clientId={import.meta.env.VITE_REACT_APP_GOOGLE_AUTH_KEY}
-    >
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </GoogleOAuthProvider>
-  </StrictMode>
+  <GoogleOAuthProvider
+    clientId={import.meta.env.VITE_REACT_APP_GOOGLE_AUTH_KEY}
+  >
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </GoogleOAuthProvider>
 );

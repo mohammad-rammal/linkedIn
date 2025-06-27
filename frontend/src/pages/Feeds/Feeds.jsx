@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 import Card from "../../components/Card/Card";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
-import profileImage from "../../assets/images/profileImage.png";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import PhotoIcon from "@mui/icons-material/Photo";
 import ArticleIcon from "@mui/icons-material/Article";
@@ -12,9 +13,35 @@ import AddModal from "../../components/AddModal/AddModal";
 import SkeletonList from "../../components/SkeletonItem/SkeletonList";
 
 const Feeds = () => {
+  const [personalData, setPersonalData] = useState(null);
+  const [post, setPost] = useState([]);
+
   const [addPostModal, setAddPostModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const [userData, postData] = await Promise.all([
+        await axios.get("http://localhost:5000/api/auth/self", {
+          withCredentials: true,
+        }),
+        await axios.get("http://localhost:5000/api/post/getAllPost"),
+      ]);
+
+      setPersonalData(userData?.data?.user);
+      localStorage.setItem("userInfo", JSON.stringify(userData.data.user));
+
+      setPosts(postData?.data?.post);
+    } catch (err) {
+      console.log("API error: ", err);
+      toast.error(err?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleOpenPostModal = () => {
     setAddPostModal((prev) => !prev);
@@ -33,7 +60,7 @@ const Feeds = () => {
       {/* Left Side */}
       <div className="w-[21%] sm:block sm:w-[23%] hidden py-5">
         <div className="h-fit">
-          <ProfileCard />
+          <ProfileCard data={personalData} />
         </div>
         <div className="w-full my-5">
           <Card padding={1}>
@@ -56,7 +83,7 @@ const Feeds = () => {
           <Card padding={1}>
             <div className="flex gap-2 items-center">
               <img
-                src={profileImage}
+                src={personalData?.profilePicture}
                 alt="profile"
                 className="rounded-4xl w-13 h-1/3 border-2 border-white cursor-pointer"
               />
@@ -100,7 +127,14 @@ const Feeds = () => {
           {loading ? (
             <SkeletonList count={3} type="post" />
           ) : (
-            posts.map((_, index) => <Post key={index} />)
+            posts.map((item, index) => (
+              <Post
+                key={index}
+                item={item}
+                personalData={personalData}
+                postKey={index}
+              />
+            ))
           )}
         </div>
       </div>
@@ -129,7 +163,7 @@ const Feeds = () => {
       {/* Modal */}
       {addPostModal && (
         <Modal title={""} closeModal={handleOpenPostModal}>
-          <AddModal />
+          <AddModal personalData={personalData} />
         </Modal>
       )}
     </div>
