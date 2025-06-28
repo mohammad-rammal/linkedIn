@@ -36,6 +36,8 @@ const Feeds = () => {
     } catch (err) {
       console.log("API error: ", err);
       toast.error(err?.response?.data?.error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,14 +48,6 @@ const Feeds = () => {
   const handleOpenPostModal = () => {
     setAddPostModal((prev) => !prev);
   };
-
-  // Simulate loading
-  useEffect(() => {
-    setTimeout(() => {
-      setPosts([{}, {}, {}]); // sample data
-      setLoading(false);
-    }, 2000);
-  }, []);
 
   return (
     <div className="px-5 xl:px-50 py-9 flex gap-5 w-full mt-5 bg-gray-100">
@@ -127,7 +121,7 @@ const Feeds = () => {
           {loading ? (
             <SkeletonList count={3} type="post" />
           ) : (
-            posts.map((item, index) => (
+            posts?.map((item, index) => (
               <Post
                 key={index}
                 item={item}

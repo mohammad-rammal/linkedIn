@@ -1,5 +1,5 @@
-import postReact from "../../assets/images/postReact.png";
 import ImageIcon from "@mui/icons-material/Image";
+import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -7,9 +7,49 @@ const AddModal = (props) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [description, setDescription] = useState("");
 
+  // cloudName = daxgd2nyv
+  // presetName = linkedInClone
+
   const handlePost = async () => {
     if ((description.trim().length === 0) & !imageUrl)
       return toast.error("Please insert post or image");
+
+    await axios
+      .post(
+        "http://localhost:5000/api/post",
+        {
+          description,
+          imageLink: imageUrl,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        toast.success("The post created");
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleUploadImage = async (e) => {
+    const files = e.target.files;
+    const data = new FormData();
+    data.append("file", files[0]);
+
+    data.append("upload_preset", "linkedInClone");
+
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/daxgd2nyv/image/upload",
+        data
+      );
+
+      const imageUrl = response.data.url;
+      setImageUrl(imageUrl);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -38,7 +78,7 @@ const AddModal = (props) => {
       {imageUrl && (
         <div>
           <img
-            src={postReact}
+            src={imageUrl}
             alt="postReact"
             className="w-20 h-20 rounded-xl"
           />
@@ -50,7 +90,12 @@ const AddModal = (props) => {
           <label className="cursor-pointer" htmlFor="inputFile">
             <ImageIcon />
           </label>
-          <input type="file" className="hidden" id="inputFile" />
+          <input
+            onChange={handleUploadImage}
+            type="file"
+            className="hidden"
+            id="inputFile"
+          />
         </div>
         <div
           onClick={handlePost}

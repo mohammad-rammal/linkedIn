@@ -1,16 +1,53 @@
 import Card from "../Card/Card";
 import profileImage from "../../assets/images/profileImage.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
 import SendIcon from "@mui/icons-material/Send";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Post = ({ profile, item, personalData, postKey }) => {
   const [seeMore, setSeeMore] = useState(false);
   const [comment, setComment] = useState(false);
 
-  console.log(item);
+  const [liked, setLiked] = useState(false);
+  const [numberOfLikes, setNumberOfLikes] = useState(item?.likes.length);
+
+  useEffect(() => {
+    let selfId = personalData?._id;
+    item?.likes?.map((item) => {
+      if (item.toString() === selfId.toString()) {
+        setLiked(true);
+        return;
+      } else {
+        setLiked(false);
+      }
+    });
+  }, []);
+
+  const handleLike = async () => {
+    await axios
+      .post(
+        "http://localhost:5000/api/post/likeDislike",
+        { postId: item?._id },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        if (liked) {
+          setNumberOfLikes((prev) => prev - 1);
+          setLiked(false);
+        } else {
+          setLiked(true);
+          setNumberOfLikes((prev) => prev + 1);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Something went wrong!");
+      });
+  };
 
   const handleShow = () => {
     setSeeMore((prev) => !prev);
@@ -43,27 +80,31 @@ const Post = ({ profile, item, personalData, postKey }) => {
           <div className="text-xs text-gray-500 ">{item?.user?.headline}</div>
         </div>
       </div>
-      <div className="text-md p-4 my-3 whitespace-pre-line flex-grow ">
-        {desc ? (seeMore ? desc : `${desc.slice(0, 50)}...`) : null}
-        {desc?.length >= 100 && (
-          <span onClick={handleShow} className="text-gray-500 cursor-pointer">
-            {seeMore ? "See Less" : "See More"}
-          </span>
-        )}
-      </div>
-      <div className="w-[100%] h-[300px] ">
-        <img
-          src={item?.imageLink}
-          alt="postReact"
-          className="w-full h-full  "
-        />
-      </div>
+
+      {desc?.length > 0 && (
+        <div className="text-md p-4 my-3 whitespace-pre-line flex-grow ">
+          {desc ? (seeMore ? desc : `${desc.slice(0, 50)}...`) : null}
+          {desc?.length >= 50 && (
+            <span onClick={handleShow} className="text-gray-500 cursor-pointer">
+              {seeMore ? "See Less" : "See More"}
+            </span>
+          )}
+        </div>
+      )}
+
+      {item?.imageLink && (
+        <div className="w-[100%] h-[300px] ">
+          <img
+            src={item?.imageLink}
+            alt="postReact"
+            className="w-full h-full  "
+          />
+        </div>
+      )}
       <div className="my-2 p-4 flex justify-between items-center ">
         <div className="flex gap-1 items-center ">
-          <ThumbUpIcon sx={{ color: "blue", fontSize: 18 }} />{" "}
-          <div className="text-sm text-gray-600">
-            {item?.likes?.length} Likes
-          </div>
+          <ThumbUpIcon sx={{ color: "blue", fontSize: 18 }} />
+          <div className="text-sm text-gray-600">{numberOfLikes} Likes</div>
         </div>
         <div className="flex gap-1 items-center ">
           <div className="text-sm text-gray-600">
@@ -75,9 +116,16 @@ const Post = ({ profile, item, personalData, postKey }) => {
       {/* Bar of Like, Comment, Share */}
       {!profile && (
         <div className="flex p-1">
-          <div className="w-[33%] justify-center flex gap-2 items-center border-r-1 border-gray-100 p-2 cursor-pointer hover:bg-gray-100 ">
-            <ThumbUpIcon sx={{ fontSize: 22, color: "blue" }} />{" "}
-            <span>Like</span>
+          <div
+            onClick={handleLike}
+            className="w-[33%] justify-center flex gap-2 items-center border-r-1 border-gray-100 p-2 cursor-pointer hover:bg-gray-100 "
+          >
+            {liked ? (
+              <ThumbUpIcon sx={{ fontSize: 22, color: "blue" }} />
+            ) : (
+              <ThumbUpOutlinedIcon sx={{ fontSize: 22 }} />
+            )}
+            <span>{liked ? "Liked" : "Like"}</span>
           </div>
           <div
             onClick={handleComment}
