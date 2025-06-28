@@ -13,6 +13,7 @@ const Post = ({ profile, item, personalData, postKey }) => {
   const [comment, setComment] = useState(false);
 
   const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
 
   const [liked, setLiked] = useState(false);
   const [numberOfLikes, setNumberOfLikes] = useState(item?.likes.length);
@@ -55,8 +56,29 @@ const Post = ({ profile, item, personalData, postKey }) => {
     setSeeMore((prev) => !prev);
   };
 
-  const handleSendComment = (e) => {
+  const handleSendComment = async (e) => {
     e.preventDefault();
+    if (commentText.trim().length === 0) {
+      return toast.error("Please enter comment");
+    }
+
+    await axios
+      .post(
+        "http://localhost:5000/api/comment",
+        { postId: item?._id, comment: commentText },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        setComments([res.data.comment, ...comments]);
+        toast.success(res.data.message);
+        setCommentText("");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Something went wrong!");
+      });
   };
 
   const handleCommentBoxOpenClose = async () => {
@@ -65,7 +87,7 @@ const Post = ({ profile, item, personalData, postKey }) => {
     await axios
       .get(`http://localhost:5000/api/comment/${item?._id}`)
       .then((res) => {
-        setComments(res.comments);
+        setComments(res.data.comment);
       })
       .catch((err) => {
         console.log(err);
@@ -154,12 +176,14 @@ const Post = ({ profile, item, personalData, postKey }) => {
         <div className="p-4 w-full">
           <div className="flex gap-2 items-center">
             <img
-              src={profileImage}
+              src={personalData?.profilePicture}
               alt="profileImage"
               className="w-12 h-12 rounded-full border-2 border-white cursor-pointer"
             />
             <form className="w-full flex gap-2" onSubmit={handleSendComment}>
               <input
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
                 type="text"
                 className="w-full border-1 py-3 px-5 rounded-3xl hover:bg-gray-100"
                 placeholder="Add a comment"
@@ -175,20 +199,26 @@ const Post = ({ profile, item, personalData, postKey }) => {
 
           {/* Others comment section */}
           <div className="w-full p-4 ">
-            <div className="my-4  ">
-              <div className="flex gap-3">
-                <img
-                  src={profileImage}
-                  alt="profileImage"
-                  className="w-10 h-10 rounded-4xl border-2 border-white cursor-pointer"
-                />
-                <div className="cursor-pointer">
-                  <div className="text-md">Username</div>
-                  <div className="text-sm text-gray-500">@Office Resume</div>
+            {comments?.map((item, index) => {
+              return (
+                <div key={index} className="my-4  ">
+                  <div className="flex gap-3">
+                    <img
+                      src={item?.user?.profilePicture}
+                      alt="profileImage"
+                      className="w-10 h-10 rounded-4xl border-2 border-white cursor-pointer"
+                    />
+                    <div className="cursor-pointer">
+                      <div className="text-md">{item?.user?.fullName}</div>
+                      <div className="text-sm text-gray-500">
+                        {item?.user?.headline}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="px-11 my-2">{item?.comment}</div>
                 </div>
-              </div>
-            </div>
-            <div className="px-11 my-2">Thanks for post</div>
+              );
+            })}
           </div>
         </div>
       )}
