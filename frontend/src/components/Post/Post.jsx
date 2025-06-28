@@ -12,6 +12,8 @@ const Post = ({ profile, item, personalData, postKey }) => {
   const [seeMore, setSeeMore] = useState(false);
   const [comment, setComment] = useState(false);
 
+  const [comments, setComments] = useState([]);
+
   const [liked, setLiked] = useState(false);
   const [numberOfLikes, setNumberOfLikes] = useState(item?.likes.length);
 
@@ -57,8 +59,18 @@ const Post = ({ profile, item, personalData, postKey }) => {
     e.preventDefault();
   };
 
-  const handleComment = () => {
-    setComment(true);
+  const handleCommentBoxOpenClose = async () => {
+    setComment((prev) => !prev);
+
+    await axios
+      .get(`http://localhost:5000/api/comment/${item?._id}`)
+      .then((res) => {
+        setComments(res.comments);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Something went wrong!");
+      });
   };
 
   const desc = item?.description;
@@ -107,9 +119,7 @@ const Post = ({ profile, item, personalData, postKey }) => {
           <div className="text-sm text-gray-600">{numberOfLikes} Likes</div>
         </div>
         <div className="flex gap-1 items-center ">
-          <div className="text-sm text-gray-600">
-            {item?.comments?.length} Comments
-          </div>
+          <div className="text-sm text-gray-600">{item?.comments} Comments</div>
         </div>
       </div>
 
@@ -128,7 +138,7 @@ const Post = ({ profile, item, personalData, postKey }) => {
             <span>{liked ? "Liked" : "Like"}</span>
           </div>
           <div
-            onClick={handleComment}
+            onClick={handleCommentBoxOpenClose}
             className="w-[33%] justify-center flex gap-2 items-center border-r-1 border-gray-100 p-2 cursor-pointer hover:bg-gray-100 "
           >
             <InsertCommentIcon sx={{ fontSize: 22 }} /> <span>Comment</span>
