@@ -1,5 +1,4 @@
 import Card from "../Card/Card";
-import profileImage from "../../assets/images/profileImage.png";
 import { useEffect, useState } from "react";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
@@ -115,16 +114,22 @@ const Post = ({ profile, item, personalData, postKey }) => {
         </div>
       </div>
 
-      {desc?.length > 0 && (
-        <div className="text-md p-4 my-3 whitespace-pre-line flex-grow ">
-          {desc ? (seeMore ? desc : `${desc.slice(0, 50)}...`) : null}
-          {desc?.length >= 50 && (
-            <span onClick={handleShow} className="text-gray-500 cursor-pointer">
-              {seeMore ? "See Less" : "See More"}
-            </span>
-          )}
-        </div>
-      )}
+      {/* {desc?.length > 0 && ( */}
+      <div className="text-md p-4 my-3 whitespace-pre-line flex-grow ">
+        {desc
+          ? seeMore
+            ? desc
+            : desc?.length > 50
+            ? `${desc.slice(0, 50)}...`
+            : `${desc}`
+          : null}
+        {desc?.length >= 50 && (
+          <span onClick={handleShow} className="text-gray-500 cursor-pointer">
+            {seeMore ? "See Less" : "See More"}
+          </span>
+        )}
+      </div>
+      {/* )} */}
 
       {item?.imageLink && (
         <div className="w-[100%] h-[300px] ">

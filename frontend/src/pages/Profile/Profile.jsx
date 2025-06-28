@@ -14,8 +14,14 @@ import ExperienceModal from "../../components/ExperienceModal/ExperienceModal";
 import MessageModal from "../../components/MessageModal/MessageModal";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Profile = () => {
+  const [userData, setUserData] = useState([]);
+  const [postData, setPostData] = useState([]);
+  const [ownData, setOwnData] = useState(null);
+
   const [imageSetModal, setImageSetModal] = useState(false);
   const [circularImage, setCircularImage] = useState(true);
   const [infoModal, setInfoModal] = useState(false);
@@ -26,9 +32,27 @@ const Profile = () => {
   const { id, postId } = useParams();
 
   useEffect(() => {
- 
-  }, [ ])
-  
+    fetchDataOnLoad();
+  }, []);
+
+  const fetchDataOnLoad = async () => {
+    try {
+      const [userDatas, postDatas, ownDatas] = await Promise.all([
+        axios.get(`http://localhost:5000/api/user/${id}`),
+        axios.get(`http://localhost:5000/api/post/getTop5Post/${id}`),
+        axios.get("http://localhost:5000/api/auth/self", {
+          withCredentials: true,
+        }),
+      ]);
+
+      setUserData(userDatas.data.user);
+      setPostData(postDatas.data.post);
+      setOwnData(ownDatas.data.user);
+    } catch (err) {
+      console.log("API error: ", err);
+      toast.error("Something went wrong!");
+    }
+  };
 
   const handleImageModalOpenClose = () => {
     setImageSetModal((prev) => !prev);
@@ -77,7 +101,7 @@ const Profile = () => {
                     <EditIcon />
                   </div>
                   <img
-                    src={postReact}
+                    src={userData?.coverPicture}
                     alt="postReact"
                     className="w-full h-[200px] rounded-tr-lg rounded-tl-lg  "
                   />
@@ -86,7 +110,7 @@ const Profile = () => {
                     className="absolute object-cover top-24 left-6 z-10 "
                   >
                     <img
-                      src={profileImage}
+                      src={userData?.profilePicture}
                       alt="profileImage"
                       className="w-35 h-35 rounded-full border-2 border-white cursor-pointer"
                     />
@@ -101,11 +125,13 @@ const Profile = () => {
                     <EditIcon />
                   </div>
                   <div className="w-full ">
-                    <div className="text-2xl">Username</div>
-                    <div className="text-gray-700">Full Stack</div>
-                    <div className="text-sm text-gray-500">City, Country</div>
+                    <div className="text-2xl">{userData?.fullName}</div>
+                    <div className="text-gray-700">{userData?.headline}</div>
+                    <div className="text-sm text-gray-500">
+                      {userData?.currentLocation}
+                    </div>
                     <div className="text-md text-blue-800 w-fit cursor-pointer hover:underline">
-                      2 Connections
+                      {userData?.friends?.length} Connections
                     </div>
 
                     <div className="md:flex w-full justify-between ">
@@ -149,7 +175,7 @@ const Profile = () => {
                 </div>
               </div>
               <div className="text-gray-700 text-md w-[80%] ">
-                About me section
+                {userData?.about}
               </div>
             </Card>
           </div>
@@ -161,14 +187,16 @@ const Profile = () => {
                 <div className="text-xl">Skills</div>
               </div>
               <div className="text-gray-700 text-md my-2 w-full flex gap-4 flex-wrap ">
-                <div className="cursor-pointer py-2 px-3 rounded-lg bg-blue-800 text-white ">
-                  HTML
-                </div>
-              </div>
-
-              {/* Activity */}
-              <div className="mt-5">
-                <Card padding={0}></Card>
+                {userData?.skills?.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="cursor-pointer py-2 px-3 rounded-lg bg-blue-800 text-white "
+                    >
+                      {item}
+                    </div>
+                  );
+                })}
               </div>
             </Card>
           </div>
@@ -185,12 +213,22 @@ const Profile = () => {
 
               {/* Parent div for scrollable activities */}
               <div className="overflow-x-auto my-2 gap-1 flex overflow-y-hidden w-full">
-                <Link
-                  to={`/profile/${id}/activities/${postId}`}
-                  className="shrink-0 w-[350px] h-[560px] cursor-pointer "
-                >
-                  <Post profile={1} />
-                </Link>
+                {postData?.map((item, index) => {
+                  return (
+                    <Link
+                      key={index}
+                      to={`/profile/${id}/activities/${item?._id}`}
+                      className="shrink-0 w-[350px] h-[560px] cursor-pointer "
+                    >
+                      <Post
+                        profile={1}
+                        item={item}
+                        personalData={ownData}
+                        postKey={index}
+                      />
+                    </Link>
+                  );
+                })}
               </div>
 
               <div className="w-full flex justify-center items-center ">
@@ -213,23 +251,35 @@ const Profile = () => {
                   <AddIcon />
                 </div>
               </div>
+
               <div className="mt-5 ">
-                <div className="p-2 border-t-1 border-gray-300 flex justify-between ">
-                  <div className="">
-                    <div className="text-lg">@Job | Job</div>
-                    <div className="text-sm text-gray-500">Office</div>
-                    <div className="text-sm text-gray-500">
-                      Start Date, Present
+                {userData?.experience?.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="p-2 border-t-1 border-gray-300 flex justify-between "
+                    >
+                      <div>
+                        <div className="text-lg">{item?.designation}</div>
+                        <div className="text-sm text-gray-500">
+                          {item?.companyName}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {item?.duration}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {item?.location}
+                        </div>
+                      </div>
+                      <div
+                        onClick={handleExperienceModal}
+                        className="cursor-pointer"
+                      >
+                        <EditIcon />
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500">City, Country</div>
-                  </div>
-                  <div
-                    onClick={handleExperienceModal}
-                    className="cursor-pointer"
-                  >
-                    <EditIcon />
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </Card>
           </div>

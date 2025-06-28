@@ -7,7 +7,7 @@ const Advertisement = () => {
 
   useEffect(() => {
     let userData = localStorage.getItem("userInfo");
-    setUserData(useState ? JSON.parse(userData) : null);
+    setUserData(userData ? JSON.parse(userData) : null);
   }, []);
 
   return (

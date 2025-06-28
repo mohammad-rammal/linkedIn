@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
@@ -13,6 +13,13 @@ import "./navbarV2.css";
 const NavbarV2 = () => {
   const [dropdown, setDropdown] = useState(false);
   const location = useLocation();
+
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    let userData = localStorage.getItem("userInfo");
+    setUserData(userData ? JSON.parse(userData) : null);
+  }, []);
 
   return (
     <div className="bg-white h-13 flex justify-between py-1 px-5 xl:px-50 fixed top-0 w-[100%] z-1000">
@@ -133,11 +140,11 @@ const NavbarV2 = () => {
           </div>
         </Link>
         <Link
-          to={`/profile/id`}
+          to={`/profile/${userData?._id}`}
           className="flex flex-col items-center cursor-pointer"
         >
           <img
-            src={profileImage}
+            src={userData?.profilePicture}
             alt="profileImage"
             className="w-6 h-6 rounded-full"
           />
