@@ -22,6 +22,12 @@ const Profile = () => {
   const [postData, setPostData] = useState([]);
   const [ownData, setOwnData] = useState(null);
 
+  const [updateExperience, setUpdateExperience] = useState({
+    clicked: "",
+    id: "",
+    dates: {},
+  });
+
   const [imageSetModal, setImageSetModal] = useState(false);
   const [circularImage, setCircularImage] = useState(true);
   const [infoModal, setInfoModal] = useState(false);
@@ -67,6 +73,9 @@ const Profile = () => {
   };
 
   const handleExperienceModal = () => {
+    if (experienceModal) {
+      setUpdateExperience({ clicked: "", id: "", dates: {} });
+    }
     setExperienceModal((prev) => !prev);
   };
 
@@ -82,6 +91,29 @@ const Profile = () => {
   const handleCircularImage = () => {
     setImageSetModal(true);
     setCircularImage(true);
+  };
+
+  const handleEditFunction = async (data) => {
+    await axios
+      .put(
+        "http://localhost:5000/api/user/update",
+        { user: data },
+        {
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log("API error: ", err);
+        toast.error("Something went wrong!");
+      });
+  };
+
+  const updateExperienceEdit = (id, data) => {
+    setUpdateExperience({ ...updateExperience, clicked: true, id, data });
+    setExperienceModal((prev) => !prev);
   };
 
   return (
@@ -125,7 +157,9 @@ const Profile = () => {
                     <EditIcon />
                   </div>
                   <div className="w-full ">
-                    <div className="text-2xl">{userData?.fullName}</div>
+                    <div className="text-2xl capitalize">
+                      {userData?.fullName}
+                    </div>
                     <div className="text-gray-700">{userData?.headline}</div>
                     <div className="text-sm text-gray-500">
                       {userData?.currentLocation}
@@ -213,6 +247,24 @@ const Profile = () => {
 
               {/* Parent div for scrollable activities */}
               <div className="overflow-x-auto my-2 gap-1 flex overflow-y-hidden w-full">
+                {postData?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="shrink-0 w-[350px] h-[560px] cursor-pointer "
+                  >
+                    <Post
+                      key={index}
+                      profile={1}
+                      item={item}
+                      personalData={ownData}
+                      postKey={index}
+                      linkTo={`/profile/${id}/activities/${item?._id}`} // Pass link as prop
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* <div className="overflow-x-auto my-2 gap-1 flex overflow-y-hidden w-full">
                 {postData?.map((item, index) => {
                   return (
                     <Link
@@ -229,7 +281,7 @@ const Profile = () => {
                     </Link>
                   );
                 })}
-              </div>
+              </div> */}
 
               <div className="w-full flex justify-center items-center ">
                 <Link
@@ -272,7 +324,7 @@ const Profile = () => {
                         </div>
                       </div>
                       <div
-                        onClick={handleExperienceModal}
+                        onClick={() => updateExperienceEdit(item._id, item)}
                         className="cursor-pointer"
                       >
                         <EditIcon />
@@ -295,25 +347,40 @@ const Profile = () => {
 
       {imageSetModal && (
         <Modal title="Upload Image" closeModal={handleImageModalOpenClose}>
-          <ImageModal isCircular={circularImage} />
+          <ImageModal
+            handleEditFunction={handleEditFunction}
+            selfData={ownData}
+            isCircular={circularImage}
+          />
         </Modal>
       )}
 
       {infoModal && (
         <Modal title="Edit Info" closeModal={handleInfoModal}>
-          <EditInfoModal />
+          <EditInfoModal
+            handleEditFunction={handleEditFunction}
+            selfData={ownData}
+          />
         </Modal>
       )}
 
       {aboutModal && (
         <Modal title="Edit About" closeModal={handleAboutModal}>
-          <AboutModal />
+          <AboutModal
+            handleEditFunction={handleEditFunction}
+            selfData={ownData}
+          />
         </Modal>
       )}
 
       {experienceModal && (
         <Modal title="Add Experience" closeModal={handleExperienceModal}>
-          <ExperienceModal />
+          <ExperienceModal
+            handleEditFunction={handleEditFunction}
+            selfData={ownData}
+            updateExperience={updateExperience}
+            setUpdateExperience={setUpdateExperience}
+          />
         </Modal>
       )}
 

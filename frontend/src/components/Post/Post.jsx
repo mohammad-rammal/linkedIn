@@ -1,5 +1,6 @@
 import Card from "../Card/Card";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
@@ -99,13 +100,16 @@ const Post = ({ profile, item, personalData, postKey }) => {
   return (
     <Card padding={0} key={postKey}>
       <div className="flex gap-3 p-4">
-        <div className="w-12 h-12 rounded-4xl">
+        <Link
+          to={`/profile/${item?.user?._id}`}
+          className="w-12 h-12 rounded-4xl"
+        >
           <img
             src={item?.user?.profilePicture}
             alt="profileImage"
             className="w-12 h-12 rounded-4xl border-2 border-white cursor-pointer"
           />
-        </div>
+        </Link>
         <div>
           <div className="text-lg font-semibold capitalize">
             {item?.user?.fullName}
