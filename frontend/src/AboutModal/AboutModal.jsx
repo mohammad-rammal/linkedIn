@@ -39,7 +39,7 @@ const AboutModal = ({ selfData, handleEditFunction }) => {
   };
 
   const HandleOnSave = async () => {
-    let arr = data?.skillsInp.split(",");
+    let arr = data?.skillsInp?.split(",");
 
     let newData = {
       ...selfData,

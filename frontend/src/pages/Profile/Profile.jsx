@@ -54,6 +54,8 @@ const Profile = () => {
       setUserData(userDatas.data.user);
       setPostData(postDatas.data.post);
       setOwnData(ownDatas.data.user);
+
+      localStorage.setItem("userInfo", JSON.stringify(ownDatas.data.user));
     } catch (err) {
       console.log("API error: ", err);
       toast.error("Something went wrong!");

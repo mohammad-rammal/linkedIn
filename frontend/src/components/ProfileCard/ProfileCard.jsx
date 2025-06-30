@@ -1,6 +1,4 @@
 import Card from "../Card/Card";
-import landscape from "../../assets/images/landscapeImage.jpg";
-import profileImage from "../../assets/images/profileImage.png";
 
 const ProfileCard = (props) => {
   return (
