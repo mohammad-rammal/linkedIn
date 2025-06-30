@@ -35,11 +35,11 @@ const Profile = () => {
   const [experienceModal, setExperienceModal] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
 
-  const { id, postId } = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     fetchDataOnLoad();
-  }, []);
+  }, [id]);
 
   const fetchDataOnLoad = async () => {
     try {
@@ -118,6 +118,107 @@ const Profile = () => {
     setExperienceModal((prev) => !prev);
   };
 
+  const amIFriend = () => {
+    let arr = userData?.friends?.filter((item) => {
+      return item === ownData?._id;
+    });
+
+    return arr?.length;
+  };
+
+  const isInPendingList = () => {
+    let arr = userData?.pendingFriends?.filter((item) => {
+      return item === ownData?._id;
+    });
+
+    return arr?.length;
+  };
+
+  const isInSelfPendingList = () => {
+    let arr = ownData?.pendingFriends?.filter((item) => {
+      return item === userData?._id;
+    });
+
+    return arr?.length;
+  };
+
+  const checkFriendStatus = () => {
+    if (amIFriend()) {
+      return "Disconnect";
+    } else if (isInSelfPendingList()) {
+      return "Approve Request";
+    } else if (isInPendingList()) {
+      return "Request Sent";
+    } else {
+      return "Connect";
+    }
+  };
+
+  const handleSendFriendRequest = async () => {
+    if (checkFriendStatus() === "Request Sent") return;
+
+    if (checkFriendStatus() === "Connect") {
+      await axios
+        .post(
+          "http://localhost:5000/api/user/sendFriendRequest",
+          {
+            receiver: userData?._id,
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          toast.success(res?.data?.message);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        })
+        .catch((err) => {
+          console.log("API error: ", err);
+          toast.error(err?.response?.data?.err);
+        });
+    }
+
+    if (checkFriendStatus() === "Approve Request") {
+      await axios
+        .post(
+          "http://localhost:5000/api/user/acceptFriendRequest",
+          {
+            friendId: userData?._id,
+          },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          toast.success(res?.data?.message);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        })
+        .catch((err) => {
+          console.log("API error: ", err);
+          toast.error(err?.response?.data?.err);
+        });
+    }
+
+    if (checkFriendStatus() === "Disconnect") {
+      await axios
+        .delete(
+          `http://localhost:5000/api/user/removeFromFriendList/${userData?._id}`,
+
+          { withCredentials: true }
+        )
+        .then((res) => {
+          toast.success(res?.data?.message);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        })
+        .catch((err) => {
+          console.log("API error: ", err);
+          toast.error(err?.response?.data?.err);
+        });
+    }
+  };
+
   return (
     <div className="px-5 xl:px-50 py-5 mt-5 flex flex-col gap-5 w-full pt-12 bg-gray-100 ">
       <div className="flex justify-between">
@@ -128,12 +229,14 @@ const Profile = () => {
             <Card padding={0}>
               <div className="w-full h-fit ">
                 <div className="relative w-full h-[200px]  ">
-                  <div
-                    onClick={handleOnEditCover}
-                    className="absolute cursor-pointer top-3 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white "
-                  >
-                    <EditIcon />
-                  </div>
+                  {userData?._id === ownData?._id && (
+                    <div
+                      onClick={handleOnEditCover}
+                      className="absolute cursor-pointer top-3 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white "
+                    >
+                      <EditIcon />
+                    </div>
+                  )}
                   <img
                     src={userData?.coverPicture}
                     alt="postReact"
@@ -152,12 +255,14 @@ const Profile = () => {
                 </div>
 
                 <div className="mt-10 relative px-8 py-2">
-                  <div
-                    onClick={handleInfoModal}
-                    className="absolute cursor-pointer top-0 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white "
-                  >
-                    <EditIcon />
-                  </div>
+                  {userData?._id === ownData?._id && (
+                    <div
+                      onClick={handleInfoModal}
+                      className="absolute cursor-pointer top-0 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white "
+                    >
+                      <EditIcon />
+                    </div>
+                  )}
                   <div className="w-full ">
                     <div className="text-2xl capitalize">
                       {userData?.fullName}
@@ -178,21 +283,31 @@ const Profile = () => {
                         <div className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold">
                           Share
                         </div>
-                        <div className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold">
-                          Logout
-                        </div>
+                        {userData?._id === ownData?._id && (
+                          <div className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold">
+                            Logout
+                          </div>
+                        )}
                       </div>
 
                       <div className="my-5 flex gap-5">
-                        <div
-                          onClick={handleMessageModal}
-                          className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold"
-                        >
-                          Message
-                        </div>
-                        <div className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold">
-                          Connect
-                        </div>
+                        {amIFriend() ? (
+                          <div
+                            onClick={handleMessageModal}
+                            className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold"
+                          >
+                            Message
+                          </div>
+                        ) : null}
+
+                        {userData?._id === ownData?._id ? null : (
+                          <div
+                            onClick={handleSendFriendRequest}
+                            className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold"
+                          >
+                            {checkFriendStatus()}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -206,9 +321,11 @@ const Profile = () => {
             <Card padding={1}>
               <div className="flex justify-between items-center">
                 <div className="text-xl">About</div>
-                <div onClick={handleAboutModal} className="cursor-pointer">
-                  <EditIcon />
-                </div>
+                {userData?._id === ownData?._id && (
+                  <div onClick={handleAboutModal} className="cursor-pointer">
+                    <EditIcon />
+                  </div>
+                )}
               </div>
               <div className="text-gray-700 text-md w-[80%] ">
                 {userData?.about}
@@ -301,9 +418,14 @@ const Profile = () => {
             <Card padding={1}>
               <div className="flex justify-between items-center">
                 <div className="text-xl">Experience</div>
-                <div onClick={handleExperienceModal} className="cursor-pointer">
-                  <AddIcon />
-                </div>
+                {userData?._id === ownData?._id && (
+                  <div
+                    onClick={handleExperienceModal}
+                    className="cursor-pointer"
+                  >
+                    <AddIcon />
+                  </div>
+                )}
               </div>
 
               <div className="mt-5 ">
@@ -325,12 +447,14 @@ const Profile = () => {
                           {item?.location}
                         </div>
                       </div>
-                      <div
-                        onClick={() => updateExperienceEdit(item._id, item)}
-                        className="cursor-pointer"
-                      >
-                        <EditIcon />
-                      </div>
+                      {userData?._id === ownData?._id && (
+                        <div
+                          onClick={() => updateExperienceEdit(item._id, item)}
+                          className="cursor-pointer"
+                        >
+                          <EditIcon />
+                        </div>
+                      )}
                     </div>
                   );
                 })}

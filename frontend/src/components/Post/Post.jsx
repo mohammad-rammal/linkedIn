@@ -211,7 +211,10 @@ const Post = ({ profile, item, personalData, postKey }) => {
             {comments?.map((item, index) => {
               return (
                 <div key={index} className="my-4  ">
-                  <div className="flex gap-3">
+                  <Link
+                    to={`/profile/${item?.user?._id}`}
+                    className="flex gap-3"
+                  >
                     <img
                       src={item?.user?.profilePicture}
                       alt="profileImage"
@@ -223,7 +226,7 @@ const Post = ({ profile, item, personalData, postKey }) => {
                         {item?.user?.headline}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                   <div className="px-11 my-2">{item?.comment}</div>
                 </div>
               );

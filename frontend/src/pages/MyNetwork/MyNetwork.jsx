@@ -20,8 +20,9 @@ const MyNetwork = () => {
         withCredentials: true,
       })
       .then((res) => {
-        setData(res.data.pendingFriends);
+        setData(res.data.friends);
       })
+
       .catch((err) => {
         console.log(err);
       });
@@ -33,7 +34,7 @@ const MyNetwork = () => {
         withCredentials: true,
       })
       .then((res) => {
-        setData(res.data.friends);
+        setData(res.data.pendingFriends);
       })
       .catch((err) => {
         console.log(err);

@@ -1,9 +1,10 @@
+import { Link } from "react-router-dom";
 import Card from "../Card/Card";
 
 const ProfileCard = (props) => {
   return (
     <Card padding={0}>
-      <div className="relative h-25">
+      <Link to={`/profile/${props?.data?._id}`} className="relative h-25">
         <div className="relative w-full h-22 rounded-md">
           <img
             src={props?.data?.coverPicture}
@@ -18,7 +19,7 @@ const ProfileCard = (props) => {
             className="rounded-full border-2 h-16 w-16 border-white cursor-pointer "
           />
         </div>
-      </div>
+      </Link>
       <div className="p-5 ">
         <div className="text-xl capitalize">{props?.data?.fullName}</div>
         <div className="text-sm my-1">{props?.data?.headline}</div>
