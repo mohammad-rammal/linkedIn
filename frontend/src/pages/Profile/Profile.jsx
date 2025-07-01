@@ -367,7 +367,8 @@ const Profile = () => {
               {/* Parent div for scrollable activities */}
               <div className="overflow-x-auto my-2 gap-1 flex overflow-y-hidden w-full">
                 {postData?.map((item, index) => (
-                  <div
+                  <Link
+                    to={`/profile/${ownData?._id}/activities/${item?._id}`}
                     key={index}
                     className="shrink-0 w-[350px] h-[560px] cursor-pointer "
                   >
@@ -377,9 +378,9 @@ const Profile = () => {
                       item={item}
                       personalData={ownData}
                       postKey={index}
-                      linkTo={`/profile/${id}/activities/${item?._id}`} // Pass link as prop
+                      linkTo={`/profile/${id}/activities/${item?._id}`}
                     />
-                  </div>
+                  </Link>
                 ))}
               </div>
 
@@ -402,14 +403,16 @@ const Profile = () => {
                 })}
               </div> */}
 
-              <div className="w-full flex justify-center items-center ">
-                <Link
-                  to={`/profile/${id}/activities`}
-                  className="p-2 rounded-xl cursor-pointer hover:bg-gray-300"
-                >
-                  Show All Posts <ArrowRightAltIcon />
-                </Link>
-              </div>
+              {postData?.length > 5 && (
+                <div className="w-full flex justify-center items-center ">
+                  <Link
+                    to={`/profile/${id}/activities`}
+                    className="p-2 rounded-xl cursor-pointer hover:bg-gray-300"
+                  >
+                    Show All Posts <ArrowRightAltIcon />
+                  </Link>
+                </div>
+              )}
             </Card>
           </div>
 

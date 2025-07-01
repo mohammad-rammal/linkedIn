@@ -5,16 +5,51 @@ import GroupIcon from "@mui/icons-material/Group";
 import WorkIcon from "@mui/icons-material/Work";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
 import AddAlertOutlinedIcon from "@mui/icons-material/AddAlertOutlined";
-
+import axios from "axios";
 import linkedinLogo from "../../assets/images/LinkedIn_logo_initials.png";
 import profileImage from "../../assets/images/profileImage.png";
 import "./navbarV2.css";
+import { toast } from "react-toastify";
 
 const NavbarV2 = () => {
-  const [dropdown, setDropdown] = useState(false);
+  // const [dropdown, setDropdown] = useState(false);
   const location = useLocation();
 
   const [userData, setUserData] = useState(null);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+  const [searchUser, setSearchUser] = useState([]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, 1000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (debouncedTerm) {
+      searchAPICall();
+    }
+  }, [debouncedTerm]);
+
+  const searchAPICall = async () => {
+    await axios
+      .get(`http://localhost:5000/api/user/findUser?query=${debouncedTerm}`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setSearchUser(res?.data?.user);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err?.response?.data?.error);
+      });
+  };
 
   useEffect(() => {
     let userData = localStorage.getItem("userInfo");
@@ -29,23 +64,36 @@ const NavbarV2 = () => {
         </Link>
         <div className=" relative ">
           <input
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+            }}
             type="text"
             className="searchInput w-70 bg-gray-100 rounded-sm h-10 px-4"
             placeholder="Search..."
           />
 
-          {dropdown && (
+          {searchUser?.length > 0 && debouncedTerm.length !== 0 && (
             <div className="absolute w-88 left-0 bg-gray-200 ">
-              <div className="flex gap-2 mb-1 items-center p-2 cursor-pointer">
-                <div>
-                  <img
-                    src={profileImage}
-                    alt="profileImage"
-                    className="w-10 h-10 rounded-full"
-                  />
-                </div>
-                <div>Profile</div>
-              </div>
+              {searchUser?.map((item, index) => {
+                return (
+                  <Link
+                    to={`/profile/${item?._id}`}
+                    key={index}
+                    onClick={() => setSearchTerm("")}
+                    className="flex gap-2 mb-1 items-center p-2 cursor-pointer"
+                  >
+                    <div>
+                      <img
+                        src={item?.profilePicture}
+                        alt="profileImage"
+                        className="w-10 h-10 rounded-full"
+                      />
+                    </div>
+                    <div>{item?.fullName}</div>
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>

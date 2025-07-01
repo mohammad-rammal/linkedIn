@@ -16,7 +16,7 @@ const Post = ({ profile, item, personalData, postKey }) => {
   const [commentText, setCommentText] = useState("");
 
   const [liked, setLiked] = useState(false);
-  const [numberOfLikes, setNumberOfLikes] = useState(item?.likes.length);
+  const [numberOfLikes, setNumberOfLikes] = useState(item?.likes?.length);
 
   useEffect(() => {
     let selfId = personalData?._id;
@@ -93,6 +93,17 @@ const Post = ({ profile, item, personalData, postKey }) => {
         console.log(err);
         toast.error("Something went wrong!");
       });
+  };
+  console.log(item);
+
+  const copyToClipboard = async () => {
+    try {
+      let string = `http://localhost:5173/profile/${item?.user?._id}/activities/${item?._id}`;
+      await navigator.clipboard.writeText(string);
+      toast.success("Copied to clipboard");
+    } catch (error) {
+      console.error("Failed to copy!", error);
+    }
   };
 
   const desc = item?.description;
@@ -174,7 +185,10 @@ const Post = ({ profile, item, personalData, postKey }) => {
           >
             <InsertCommentIcon sx={{ fontSize: 22 }} /> <span>Comment</span>
           </div>
-          <div className="w-[33%] justify-center flex gap-2 items-center border-r-1 border-gray-100 p-2 cursor-pointer hover:bg-gray-100 ">
+          <div
+            onClick={copyToClipboard}
+            className="w-[33%] justify-center flex gap-2 items-center border-r-1 border-gray-100 p-2 cursor-pointer hover:bg-gray-100 "
+          >
             <SendIcon sx={{ fontSize: 22 }} /> <span>Share</span>
           </div>
         </div>
