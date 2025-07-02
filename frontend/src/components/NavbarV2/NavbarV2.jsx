@@ -66,11 +66,17 @@ const NavbarV2 = () => {
   };
 
   useEffect(() => {
-    let userData = localStorage.getItem("userInfo");
+    const userData = localStorage.getItem("userInfo");
     setUserData(userData ? JSON.parse(userData) : null);
 
     fetchNotification();
-  }, []);
+
+    // const interval = setInterval(() => {
+    //   fetchNotification();
+    // }, 30000);
+
+    // return () => clearInterval(interval);
+  }, [location]);
 
   return (
     <div className="bg-white h-13 flex justify-between py-1 px-5 xl:px-50 fixed top-0 w-[100%] z-1000">
