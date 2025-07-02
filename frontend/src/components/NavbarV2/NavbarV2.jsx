@@ -7,7 +7,6 @@ import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
 import AddAlertOutlinedIcon from "@mui/icons-material/AddAlertOutlined";
 import axios from "axios";
 import linkedinLogo from "../../assets/images/LinkedIn_logo_initials.png";
-import profileImage from "../../assets/images/profileImage.png";
 import "./navbarV2.css";
 import { toast } from "react-toastify";
 
@@ -20,6 +19,7 @@ const NavbarV2 = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [searchUser, setSearchUser] = useState([]);
+  const [notificationCount, setNotificationCount] = useState("");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -51,9 +51,25 @@ const NavbarV2 = () => {
       });
   };
 
+  const fetchNotification = async () => {
+    await axios
+      .get("http://localhost:5000/api/notification/activeNotification", {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setNotificationCount(res?.data?.count);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err?.response?.data?.error);
+      });
+  };
+
   useEffect(() => {
     let userData = localStorage.getItem("userInfo");
     setUserData(userData ? JSON.parse(userData) : null);
+
+    fetchNotification();
   }, []);
 
   return (
@@ -175,9 +191,11 @@ const NavbarV2 = () => {
                   location.pathname === "/notifications" ? "black" : "gray",
               }}
             />
-            <span className="py-0.5 px-1.5 rounded-full text-xs bg-red-700 text-white  font-bold absolute -top-0.5 -right-1.5">
-              2
-            </span>
+            {notificationCount && (
+              <span className="py-0.5 px-1.5 rounded-full text-xs bg-red-700 text-white  font-bold absolute -top-0.5 -right-1.5">
+                {notificationCount}
+              </span>
+            )}
           </div>
           <div
             className={`text-sm text-gray-500 ${

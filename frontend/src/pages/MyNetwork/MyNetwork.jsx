@@ -50,7 +50,7 @@ const MyNetwork = () => {
   }, [text]);
 
   return (
-    <div className="px-5 xl:px-50 py-9 flex flex-col gap-5 w-full mt-5 bg-gray-100">
+    <div className="px-5 xl:px-50 py-9 flex flex-col gap-5 w-full mt-5 bg-gray-100 min-h-[100vh]">
       <div className="py-4 px-10 border-1 border-gray-400 w-full flex justify-between my-5 text-xl-center bg-white rounded-xl ">
         <div>{text}</div>
         <div className="flex gap-3 ">

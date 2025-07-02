@@ -13,7 +13,7 @@ import AboutModal from "../../AboutModal/AboutModal";
 import ExperienceModal from "../../components/ExperienceModal/ExperienceModal";
 import MessageModal from "../../components/MessageModal/MessageModal";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -21,6 +21,7 @@ const Profile = () => {
   const [userData, setUserData] = useState([]);
   const [postData, setPostData] = useState([]);
   const [ownData, setOwnData] = useState(null);
+  const navigate = useNavigate();
 
   const [updateExperience, setUpdateExperience] = useState({
     clicked: "",
@@ -219,6 +220,38 @@ const Profile = () => {
     }
   };
 
+  const handleLogout = async () => {
+    await axios
+      .post(
+        "http://localhost:5000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      )
+      .then((res) => {
+        localStorage.removeItem("userInfo");
+        localStorage.clear();
+        toast.success("Successfully logout");
+
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      })
+      .catch((err) => {
+        console.log("API error: ", err);
+        toast.error("Something went wrong!");
+      });
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      let string = `http://localhost:5173/profile/${id}`;
+      await navigator.clipboard.writeText(string);
+      toast.success("Copied to clipboard");
+    } catch (error) {
+      console.error("Failed to copy!", error);
+    }
+  };
+
   return (
     <div className="px-5 xl:px-50 py-5 mt-5 flex flex-col gap-5 w-full pt-12 bg-gray-100 ">
       <div className="flex justify-between">
@@ -280,11 +313,17 @@ const Profile = () => {
                         <div className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold">
                           Open to
                         </div>
-                        <div className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold">
+                        <div
+                          onClick={copyToClipboard}
+                          className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold"
+                        >
                           Share
                         </div>
                         {userData?._id === ownData?._id && (
-                          <div className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold">
+                          <div
+                            onClick={handleLogout}
+                            className="cursor-pointer p-2 border-1 rounded-lg bg-blue-800 text-white font-semibold"
+                          >
                             Logout
                           </div>
                         )}
@@ -515,7 +554,7 @@ const Profile = () => {
 
       {messageModal && (
         <Modal title="Send Message" closeModal={handleMessageModal}>
-          <MessageModal />
+          <MessageModal selfData={ownData} userData={userData} />
         </Modal>
       )}
     </div>

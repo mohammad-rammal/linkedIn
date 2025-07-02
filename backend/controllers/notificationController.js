@@ -8,10 +8,10 @@ const Notification = require("../models/notification");
 exports.getNotification = async (req, res) => {
   try {
     const ownId = req.user._id;
-    console.log(ownId);
-    console.log(req.user);
+    // console.log(ownId);e
+    // console.log(req.user);
 
-    const notifications = await Notification.find({ receiver: "ownId" })
+    const notifications = await Notification.find({ receiver: ownId })
       .sort({
         createAt: -1,
       })
@@ -35,7 +35,7 @@ exports.getNotification = async (req, res) => {
 exports.updateRead = async (req, res) => {
   try {
     const { notificationId } = req.body;
-    const notification = await Notification.findByItAndUpdate(notificationId, {
+    const notification = await Notification.findByIdAndUpdate(notificationId, {
       isRead: true,
     });
     if (!notification) {

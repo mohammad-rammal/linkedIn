@@ -94,7 +94,6 @@ const Post = ({ profile, item, personalData, postKey }) => {
         toast.error("Something went wrong!");
       });
   };
-  console.log(item);
 
   const copyToClipboard = async () => {
     try {
